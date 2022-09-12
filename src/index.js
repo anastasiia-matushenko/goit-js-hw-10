@@ -21,16 +21,22 @@ function onSearchInput(evt) {
     
     fetchCountries(searchValue)
         .then(response => {
-        if (response.length > 10) {
-            Notify.info("Too many matches found. Please enter a more specific name.");
-        } else if (response.length > 2 && response.length < 10) {
-            createList(response);
-        } else if (response.length === 1) {
-            createCard(response);
-        }  
+            if (response.length > 10) {
+                return Notify.info("Too many matches found. Please enter a more specific name.");
+            }
+                
+            if (response.length >= 2 && response.length <= 10) {
+                createList(response);
+                return;
+            }
+                
+            if (response.length === 1) {
+                createCard(response);
+                return;
+            }  
         })
         .catch(onError);
-}
+};
 
 function createList(countries) {
     const countryList = countries.reduce((acc, {
@@ -73,5 +79,5 @@ function clearList() {
 };
 
 function onError() {
-    Notify.failure("Oops, there is no country with that name");
+    return Notify.failure("Oops, there is no country with that name");
 };
